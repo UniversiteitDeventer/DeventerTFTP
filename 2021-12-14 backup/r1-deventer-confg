@@ -1,0 +1,125 @@
+
+!
+! Last configuration change at 12:34:43 GMT Wed Dec 8 2021
+! NVRAM config last updated at 12:34:44 GMT Wed Dec 8 2021
+!
+version 15.4
+service timestamps debug datetime msec localtime show-timezone
+service timestamps log datetime msec localtime show-timezone
+no service password-encryption
+!
+hostname R1-Deventer
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$Ndc4$KXisR.uq9vp4QKBSyhnuh1
+!
+no aaa new-model
+clock timezone GMT 1 0
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain lookup
+ip domain name deventer.net
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+cts logging verbose
+!
+!
+license udi pid CISCO1941/K9 sn FCZ2048406L
+license boot module c1900 technology-package securityk9
+!
+!
+username admin secret 5 $1$6vu0$rHFI4eXyNnvI2a9aGJOlF1
+!
+redundancy
+!
+!
+!
+!
+!
+ip ssh authentication-retries 4
+ip ssh version 2
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Embedded-Service-Engine0/0
+ no ip address
+ shutdown
+!
+interface GigabitEthernet0/0
+ ip address 10.255.255.2 255.255.255.248
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1
+ ip address 10.255.255.9 255.255.255.252
+ duplex auto
+ speed auto
+!
+interface Serial0/0/0
+ ip address 10.255.255.17 255.255.255.252
+ clock rate 8000000
+!
+interface Serial0/0/1
+ ip address 10.255.255.29 255.255.255.252
+ clock rate 8000000
+!
+router ospf 1
+ network 10.255.0.0 0.0.255.255 area 1
+!
+ip forward-protocol nd
+!
+no ip http server
+no ip http secure-server
+!
+!
+logging trap warnings
+logging host 10.0.0.10
+!
+!
+!
+control-plane
+!
+!
+!
+line con 0
+line aux 0
+line 2
+ no activation-character
+ no exec
+ transport preferred none
+ transport output pad telnet rlogin lapb-ta mop udptn v120 ssh
+ stopbits 1
+line vty 0 4
+ password rood-kabeltje
+ login local
+ transport input ssh
+!
+scheduler allocate 20000 1000
+ntp server 10.0.0.28
+!
+end

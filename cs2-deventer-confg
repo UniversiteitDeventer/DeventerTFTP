@@ -1,0 +1,290 @@
+
+!
+! Last configuration change at 09:55:48 utc Fri Dec 24 2021 by admin
+! NVRAM config last updated at 09:58:52 utc Fri Dec 24 2021 by admin
+!
+version 15.2
+no service pad
+service timestamps debug datetime msec localtime show-timezone
+service timestamps log datetime msec localtime show-timezone
+no service password-encryption
+service compress-config
+!
+hostname CS2-Deventer
+!
+boot-start-marker
+boot-end-marker
+!
+!
+vrf definition Mgmt-vrf
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+enable secret 5 $1$.4go$puh/Zq1BQYDTmEwcdQ79Y0
+!
+username admin secret 5 $1$yD2W$hmu6OuX6NwyxsZ09FFSNv1
+no aaa new-model
+clock timezone utc 1 0
+switch 1 provision ws-c3650-24ts
+!
+!
+!
+!
+!
+ip routing
+!
+no ip domain-lookup
+ip domain-name deventer.net
+!
+!
+qos queue-softmax-multiplier 100
+vtp domain uni
+vtp mode transparent
+!
+!
+diagnostic bootup level minimal
+!
+spanning-tree mode rapid-pvst
+spanning-tree extend system-id
+hw-switch switch 1 logging onboard message level 3
+!
+redundancy
+ mode sso
+!
+!
+vlan 20 
+!
+vlan 1701
+ name studenten
+!
+vlan 1702
+ name medewerkers
+!
+vlan 1710
+ name management
+!
+!
+class-map match-any non-client-nrt-class
+!
+policy-map port_child_policy
+ class non-client-nrt-class
+  bandwidth remaining ratio 10
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Port-channel1
+ description Interface voor G1/0/2-3(Etherchannal)
+ no switchport
+ ip address 10.255.255.18 255.255.255.252
+ ip ospf message-digest-key 1 md5 rood-kabeltje
+!
+interface GigabitEthernet0/0
+ vrf forwarding Mgmt-vrf
+ no ip address
+ shutdown
+ negotiation auto
+!
+interface GigabitEthernet1/0/1
+ description link to R2-Deventer
+ no switchport
+ ip address 10.255.255.14 255.255.255.252
+ ip ospf message-digest-key 1 md5 rood-kabeltje
+!
+interface GigabitEthernet1/0/2
+ description port-channel link to CS1-Deventer
+ no switchport
+ no ip address
+ channel-group 1 mode active
+!
+interface GigabitEthernet1/0/3
+ description port-channel link to CS1-Deventer
+ no switchport
+ no ip address
+ channel-group 1 mode active
+!
+interface GigabitEthernet1/0/4
+ description link naar S-Deventer
+ switchport trunk native vlan 1710
+ switchport mode trunk
+!
+interface GigabitEthernet1/0/5
+ description link to R-Ermelo
+ no switchport
+ ip address 10.255.255.25 255.255.255.252
+ ip ospf message-digest-key 1 md5 7 02140B540F4B04204E4B050D0F12
+!
+interface GigabitEthernet1/0/6
+ shutdown
+!
+interface GigabitEthernet1/0/7
+ shutdown
+!
+interface GigabitEthernet1/0/8
+ shutdown
+!
+interface GigabitEthernet1/0/9
+ shutdown
+!
+interface GigabitEthernet1/0/10
+ shutdown
+!
+interface GigabitEthernet1/0/11
+ shutdown
+!
+interface GigabitEthernet1/0/12
+ shutdown
+!
+interface GigabitEthernet1/0/13
+ shutdown
+!
+interface GigabitEthernet1/0/14
+ shutdown
+!
+interface GigabitEthernet1/0/15
+ shutdown
+!
+interface GigabitEthernet1/0/16
+ shutdown
+!
+interface GigabitEthernet1/0/17
+ shutdown
+!
+interface GigabitEthernet1/0/18
+ shutdown
+!
+interface GigabitEthernet1/0/19
+ shutdown
+!
+interface GigabitEthernet1/0/20
+ shutdown
+!
+interface GigabitEthernet1/0/21
+ shutdown
+!
+interface GigabitEthernet1/0/22
+ shutdown
+!
+interface GigabitEthernet1/0/23
+ shutdown
+!
+interface GigabitEthernet1/0/24
+ shutdown
+!
+interface GigabitEthernet1/1/1
+ shutdown
+!
+interface GigabitEthernet1/1/2
+ shutdown
+!
+interface GigabitEthernet1/1/3
+ shutdown
+!
+interface GigabitEthernet1/1/4
+ shutdown
+!
+interface Vlan1
+ ip address dhcp
+ shutdown
+!
+interface Vlan1701
+ ip address 10.1.3.253 255.255.252.0
+ ip access-group ACL-Inbound in
+ ip helper-address 10.0.0.2
+ standby 2 ip 10.1.0.1
+ standby 2 preempt
+!
+interface Vlan1702
+ ip address 10.1.7.253 255.255.252.0
+ ip access-group ACL-Inbound in
+ ip helper-address 10.0.0.2
+ standby 3 ip 10.1.4.1
+ standby 3 preempt
+!
+interface Vlan1703
+ no ip address
+!
+interface Vlan1710
+ ip address 10.255.0.253 255.255.255.0
+ standby 1 ip 10.255.0.1
+ standby 1 preempt
+!
+router ospf 1
+ area 1 authentication message-digest
+ passive-interface Vlan1701
+ passive-interface Vlan1702
+ passive-interface Vlan1710
+ passive-interface GigabitEthernet1/0/4
+ network 10.1.0.0 0.0.255.255 area 1
+ network 10.255.0.0 0.0.255.255 area 1
+!
+ip forward-protocol nd
+ip http server
+ip http authentication local
+ip http secure-server
+!
+ip ssh authentication-retries 4
+ip ssh version 2
+!
+ip access-list extended ACL-Inbound
+ deny   tcp 10.1.0.0 0.0.3.255 any eq 22 log
+ deny   tcp 10.1.4.0 0.0.3.255 any eq 22 log
+ permit ip any any
+!
+logging trap warnings
+logging host 10.0.0.10
+!
+!
+!
+!
+line con 0
+ stopbits 1
+line aux 0
+ stopbits 1
+line vty 0 4
+ password rood-kabeltje
+ login local
+ transport input ssh
+line vty 5 15
+ login
+!
+ntp server 10.0.0.28
+wsma agent exec
+ profile httplistener
+ profile httpslistener
+!
+wsma agent config
+ profile httplistener
+ profile httpslistener
+!
+wsma agent filesys
+ profile httplistener
+ profile httpslistener
+!
+wsma agent notify
+ profile httplistener
+ profile httpslistener
+!
+!
+wsma profile listener httplistener
+ transport http
+!
+wsma profile listener httpslistener
+ transport https
+!
+ap group default-group
+end

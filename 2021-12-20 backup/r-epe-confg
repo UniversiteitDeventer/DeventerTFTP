@@ -1,0 +1,164 @@
+
+!
+! Last configuration change at 12:51:27 GMT Mon Dec 20 2021 by admin
+! NVRAM config last updated at 13:13:51 GMT Mon Dec 20 2021 by admin
+!
+version 15.4
+service timestamps debug datetime msec localtime show-timezone
+service timestamps log datetime msec localtime show-timezone
+no service password-encryption
+!
+hostname R-Epe
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$KG4J$40AR2IfZF3EXcIktmgwG/0
+!
+no aaa new-model
+clock timezone GMT 1 0
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain lookup
+ip domain name epe.net
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+cts logging verbose
+!
+!
+license udi pid CISCO1941/K9 sn FCZ2048406P
+!
+!
+username admin secret 5 $1$27hv$LWflfvOJCmzrEXODnDn34.
+!
+redundancy
+!
+!
+!
+!
+!
+ip ssh authentication-retries 4
+ip ssh version 2
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Embedded-Service-Engine0/0
+ no ip address
+ shutdown
+!
+interface GigabitEthernet0/0
+ description link to fortigate
+ ip address 10.255.255.4 255.255.255.248
+ ip ospf message-digest-key 1 md5 rood-kabeltje
+ shutdown
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1
+ no ip address
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1.1703
+ description Studenten Epe vlan
+ encapsulation dot1Q 1703
+ ip address 10.2.0.1 255.255.255.0
+ ip access-group ACL-Workstations in
+ ip access-group ACL-Workstations out
+ ip helper-address 10.0.0.2
+!
+interface GigabitEthernet0/1.1704
+ description Medewerkers Epe vlan
+ encapsulation dot1Q 1704
+ ip address 10.2.1.1 255.255.255.0
+ ip access-group ACL-Workstations in
+ ip access-group ACL-Workstations out
+ ip helper-address 10.0.0.2
+!
+interface GigabitEthernet0/1.1710
+ description Beheer vlan
+ encapsulation dot1Q 1710 native
+ ip address 10.255.1.1 255.255.255.248
+!
+interface Serial0/0/0
+ description link to R2-Deventer
+ ip address 10.255.255.22 255.255.255.252
+ ip ospf message-digest-key 1 md5 rood-kabeltje
+ clock rate 8000000
+!
+interface Serial0/0/1
+ description link to R-Ermelo
+ ip address 10.255.255.25 255.255.255.252
+ ip ospf message-digest-key 1 md5 rood-kabeltje
+ clock rate 8000000
+!
+router ospf 1
+ area 1 authentication message-digest
+ passive-interface GigabitEthernet0/1
+ passive-interface GigabitEthernet0/1.1703
+ passive-interface GigabitEthernet0/1.1704
+ passive-interface GigabitEthernet0/1.1710
+ network 10.2.0.0 0.0.255.255 area 1
+ network 10.255.0.0 0.0.255.255 area 1
+!
+ip forward-protocol nd
+!
+no ip http server
+no ip http secure-server
+!
+!
+ip access-list extended ACL-Workstations
+ permit tcp any any eq 22 smtp domain www pop3 139 143 389 443 445
+ permit tcp any any eq 587 636 993 995 3306 5044 5601 8888 9200
+ permit udp any any eq domain tftp ntp netbios-ss 143 syslog 3306 5044 5601 9200
+ permit ip any any
+!
+logging trap warnings
+logging host 10.0.0.10
+!
+!
+!
+control-plane
+!
+!
+!
+line con 0
+line aux 0
+line 2
+ no activation-character
+ no exec
+ transport preferred none
+ transport output pad telnet rlogin lapb-ta mop udptn v120 ssh
+ stopbits 1
+line vty 0 4
+ password rood-kabeltje
+ login local
+ transport input ssh
+!
+scheduler allocate 20000 1000
+ntp server 10.0.0.28
+!
+end

@@ -1,0 +1,142 @@
+
+!
+! Last configuration change at 16:49:28 GMT Fri Dec 17 2021
+! NVRAM config last updated at 16:49:30 GMT Fri Dec 17 2021
+!
+version 15.4
+service timestamps debug datetime msec localtime show-timezone
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname R2-Deventer
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$i0.k$9QozOOU0KmRWNzLUi2Zqp1
+!
+no aaa new-model
+clock timezone GMT 1 0
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain lookup
+ip domain name deventer.net
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+cts logging verbose
+!
+!
+license udi pid CISCO1941/K9 sn FCZ2048406B
+license boot module c1900 technology-package securityk9
+!
+!
+username admin secret 5 $1$Phc9$hAxMV3JNg0cLPZAnuIKaS1
+!
+redundancy
+!
+!
+!
+!
+!
+ip ssh authentication-retries 4
+ip ssh version 2
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Embedded-Service-Engine0/0
+ no ip address
+ shutdown
+!
+interface GigabitEthernet0/0
+ description link to fortigate
+ ip address 10.255.255.3 255.255.255.248
+ ip ospf message-digest-key 1 md5 rood-kabeltje
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1
+ description link to CS2-Deventer
+ ip address 10.255.255.13 255.255.255.252
+ ip ospf message-digest-key 1 md5 rood-kabeltje
+ duplex auto
+ speed auto
+!
+interface Serial0/0/0
+ no ip address
+ shutdown
+ clock rate 2000000
+!
+interface Serial0/0/1
+ no ip address
+ shutdown
+ clock rate 2000000
+!
+interface Serial0/1/0
+ description link to R1-Deventer
+ ip address 10.255.255.18 255.255.255.252
+ ip ospf message-digest-key 1 md5 rood-kabeltje
+!
+interface Serial0/1/1
+ description link to R-Epe
+ ip address 10.255.255.21 255.255.255.252
+ ip ospf message-digest-key 1 md5 rood-kabeltje
+!
+router ospf 1
+ area 1 authentication message-digest
+ network 10.255.0.0 0.0.255.255 area 1
+!
+ip forward-protocol nd
+!
+no ip http server
+no ip http secure-server
+!
+!
+logging trap warnings
+logging host 10.0.0.10
+!
+!
+!
+control-plane
+!
+!
+!
+line con 0
+line aux 0
+line 2
+ no activation-character
+ no exec
+ transport preferred none
+ transport output pad telnet rlogin lapb-ta mop udptn v120 ssh
+ stopbits 1
+line vty 0 4
+ password rood-kabeltje
+ login local
+ transport input ssh
+!
+scheduler allocate 20000 1000
+ntp server 10.0.0.28
+!
+end

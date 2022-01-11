@@ -1,0 +1,148 @@
+
+!
+! Last configuration change at 12:20:29 GMT Mon Dec 20 2021 by admin
+! NVRAM config last updated at 13:14:20 GMT Mon Dec 20 2021 by admin
+!
+version 15.4
+service timestamps debug datetime msec localtime show-timezone
+service timestamps log datetime msec localtime show-timezone
+service password-encryption
+!
+hostname R-Ermelo
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$tM5S$4Yb98nBPafSNsYE9F9oYx.
+!
+no aaa new-model
+clock timezone GMT 1 0
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain lookup
+ip domain name ermelo.net
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+cts logging verbose
+!
+!
+license udi pid CISCO1941/K9 sn FCZ2048B085
+license boot module c1900 technology-package securityk9
+!
+!
+username admin secret 5 $1$rYdd$G1drZFtWSnZgpwhOxwwAc.
+!
+redundancy
+!
+!
+!
+!
+!
+ip ssh authentication-retries 4
+ip ssh version 2
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Embedded-Service-Engine0/0
+ no ip address
+ shutdown
+!
+interface GigabitEthernet0/0
+ ip address 10.255.255.5 255.255.255.248
+ ip ospf message-digest-key 1 md5 7 02140B540F4B04204E4B050D0F12
+ shutdown
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1
+ no ip address
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1.1705
+ encapsulation dot1Q 1705
+ ip address 10.3.0.1 255.255.255.0
+ ip helper-address 10.0.0.2
+!
+interface GigabitEthernet0/1.1706
+ encapsulation dot1Q 1706
+ ip address 10.3.1.1 255.255.255.0
+ ip helper-address 10.0.0.2
+!
+interface GigabitEthernet0/1.1710
+ encapsulation dot1Q 1710 native
+ ip address 10.255.2.1 255.255.255.248
+!
+interface Serial0/0/0
+ ip address 10.255.255.26 255.255.255.252
+ ip ospf message-digest-key 1 md5 7 14051D040849212A262D3F212816
+ clock rate 8000000
+!
+interface Serial0/0/1
+ ip address 10.255.255.30 255.255.255.252
+ ip ospf message-digest-key 1 md5 7 02140B540F4B04204E4B050D0F12
+!
+router ospf 1
+ area 1 authentication message-digest
+ passive-interface GigabitEthernet0/1
+ passive-interface GigabitEthernet0/1.1705
+ passive-interface GigabitEthernet0/1.1706
+ passive-interface GigabitEthernet0/1.1710
+ network 10.3.0.0 0.0.255.255 area 1
+ network 10.255.0.0 0.0.255.255 area 1
+!
+ip forward-protocol nd
+!
+no ip http server
+no ip http secure-server
+!
+!
+logging trap warnings
+logging host 10.0.0.10
+!
+!
+!
+control-plane
+!
+!
+!
+line con 0
+line aux 0
+line 2
+ no activation-character
+ no exec
+ transport preferred none
+ transport output pad telnet rlogin lapb-ta mop udptn v120 ssh
+ stopbits 1
+line vty 0 4
+ password 7 0101090B5F460D0E2349421D1300
+ login local
+ transport input ssh
+!
+scheduler allocate 20000 1000
+ntp server 10.0.0.28
+!
+end

@@ -1,0 +1,216 @@
+
+!
+! Last configuration change at 10:55:45 GMT Thu Dec 9 2021 by admin
+! NVRAM config last updated at 10:55:47 GMT Thu Dec 9 2021 by admin
+!
+version 15.2
+no service pad
+service timestamps debug datetime msec localtime show-timezone
+service timestamps log datetime msec localtime show-timezone
+no service password-encryption
+!
+hostname S-Ermelo
+!
+boot-start-marker
+boot-end-marker
+!
+enable secret 5 $1$eNlq$bCCvGSkZQLiPWxVhu8ogf/
+!
+username admin secret 5 $1$7Ej4$L8mVDOqmZ2/EeDGjMgT761
+no aaa new-model
+clock timezone GMT 1 0
+system mtu routing 1500
+vtp domain ermelo.net
+vtp mode off
+!
+!
+!
+!
+!
+!
+!
+no ip domain-lookup
+ip domain-name ermelo.net
+!
+!
+crypto pki trustpoint TP-self-signed-1631840256
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-1631840256
+ revocation-check none
+ rsakeypair TP-self-signed-1631840256
+!
+!
+crypto pki certificate chain TP-self-signed-1631840256
+ certificate self-signed 01
+  3082022B 30820194 A0030201 02020101 300D0609 2A864886 F70D0101 05050030 
+  31312F30 2D060355 04031326 494F532D 53656C66 2D536967 6E65642D 43657274 
+  69666963 6174652D 31363331 38343032 3536301E 170D3933 30333031 30303030 
+  35395A17 0D323030 31303130 30303030 305A3031 312F302D 06035504 03132649 
+  4F532D53 656C662D 5369676E 65642D43 65727469 66696361 74652D31 36333138 
+  34303235 3630819F 300D0609 2A864886 F70D0101 01050003 818D0030 81890281 
+  8100BCF7 53A87373 CC8C5A19 4A99969F D2BB7647 24BBC123 EBD493F7 FD855930 
+  EF0FF408 CFD980E7 1D7390D0 55BDA224 747AC159 9702CD5F 3939B3E2 305EE3F0 
+  B89E97C6 7FCD59BF 876D0016 876C01C3 CB8DD48C 67B6C535 E1942A11 AFD2F6D8 
+  B362DE97 ACCA68B5 6407101A E57C15A1 D5EA8411 2CF21441 5AE1553B 2174BD31 
+  F9590203 010001A3 53305130 0F060355 1D130101 FF040530 030101FF 301F0603 
+  551D2304 18301680 14AA0D0A 85AFA284 D5040B61 24C899AB 867E17C7 AB301D06 
+  03551D0E 04160414 AA0D0A85 AFA284D5 040B6124 C899AB86 7E17C7AB 300D0609 
+  2A864886 F70D0101 05050003 81810059 3762C85E CDB8A234 7957A124 4268A2BA 
+  B2E31A10 718BE4CD 844A1B17 6C5070DA 0DDBC360 E1B4DA80 21775E66 716F5936 
+  4A72EF3E F5EB7A6C 116A72B3 2CBDDD38 9C72089B 3202F1E8 285D7755 7EA3922D 
+  07CCCFD6 A2F0223D 864E821F 6641A34D 4AE83F88 E4F91DEF F72EDE5F B86EF7EA 
+  64FAD79F 9F7B323D DF50DF45 CBA4BA
+  	quit
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+vlan 1705
+ name studenten
+!
+vlan 1706
+ name werknemers
+!
+vlan 1710
+ name beheer
+!
+!
+!
+!
+!
+!
+interface FastEthernet0/1
+ switchport access vlan 1705
+ switchport mode access
+ spanning-tree portfast
+!
+interface FastEthernet0/2
+ switchport access vlan 1706
+ switchport mode access
+ spanning-tree portfast
+!
+interface FastEthernet0/3
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/4
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/5
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/6
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/7
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/8
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/9
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/10
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/11
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/12
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/13
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/14
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/15
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/16
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/17
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/18
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/19
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/20
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/21
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/22
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/23
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/24
+ shutdown
+ spanning-tree portfast
+!
+interface GigabitEthernet0/1
+ switchport trunk native vlan 1710
+ switchport mode trunk
+!
+interface GigabitEthernet0/2
+ switchport trunk native vlan 1710
+ switchport trunk allowed vlan 1705,1706
+ switchport mode trunk
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+interface Vlan1710
+ ip address 10.255.2.2 255.255.255.252
+!
+ip http server
+ip http secure-server
+ip ssh authentication-retries 4
+ip ssh version 2
+!
+logging trap warnings
+logging host 10.0.0.10
+!
+no vstack
+!
+line con 0
+line vty 0 4
+ password rood-kabeltje
+ login local
+ transport input ssh
+line vty 5 15
+ no login
+!
+ntp server 10.0.0.28
+end
