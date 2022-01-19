@@ -1,7 +1,7 @@
 
 !
-! Last configuration change at 13:48:44 GMT Fri Dec 24 2021
-! NVRAM config last updated at 13:48:52 GMT Fri Dec 24 2021
+! Last configuration change at 11:02:59 GMT Wed Jan 19 2022 by admin
+! NVRAM config last updated at 11:03:00 GMT Wed Jan 19 2022 by admin
 !
 version 15.2
 no service pad
@@ -102,10 +102,16 @@ vlan 1710
 interface FastEthernet0/1
  switchport access vlan 1710
  switchport mode access
+ switchport port-security maximum 2
+ switchport port-security violation  restrict
+ switchport port-security
  spanning-tree portfast
 !
 interface FastEthernet0/2
  switchport mode access
+ switchport port-security maximum 2
+ switchport port-security violation  restrict
+ switchport port-security
  authentication event no-response action authorize vlan 1707
  authentication port-control auto
  dot1x pae authenticator
@@ -216,7 +222,7 @@ interface Vlan1
  shutdown
 !
 interface Vlan1710
- ip address 10.255.1.2 255.255.255.248
+ ip address 10.1.40.2 255.255.255.0
 !
 ip http server
 ip http secure-server

@@ -1,7 +1,7 @@
 
 !
-! Last configuration change at 09:55:34 GMT Wed Jan 19 2022
-! NVRAM config last updated at 09:55:35 GMT Wed Jan 19 2022
+! Last configuration change at 12:27:54 GMT Wed Dec 22 2021 by admin
+! NVRAM config last updated at 12:32:58 GMT Wed Dec 22 2021 by admin
 !
 version 15.4
 service timestamps debug datetime msec localtime show-timezone
@@ -35,8 +35,7 @@ clock timezone GMT 1 0
 no ip domain lookup
 ip domain name deventer.net
 ip cef
-ipv6 unicast-routing
-ipv6 cef
+no ipv6 cef
 !
 multilink bundle-name authenticated
 !
@@ -73,31 +72,22 @@ interface Embedded-Service-Engine0/0
 !
 interface GigabitEthernet0/0
  description link to fortigate
- ip address 10.1.255.3 255.255.255.248
+ ip address 10.255.255.3 255.255.255.248
  ip ospf message-digest-key 1 md5 rood-kabeltje
  duplex auto
  speed auto
- ipv6 address FE80::3 link-local
- ipv6 address FD00:1::3/126
- ipv6 ospf 1 area 1
 !
 interface GigabitEthernet0/1
  description link to CS2-Deventer
- ip address 10.1.255.13 255.255.255.252
+ ip address 10.255.255.13 255.255.255.252
  ip ospf message-digest-key 1 md5 rood-kabeltje
  duplex auto
  speed auto
- ipv6 address FE80::13 link-local
- ipv6 address FD00:1::13/127
- ipv6 ospf 1 area 1
 !
 interface Serial0/0/0
  description backup link to R1-Deventer
- ip address 10.1.255.30 255.255.255.252
+ ip address 10.255.255.30 255.255.255.252
  ip ospf message-digest-key 1 md5 rood-kabeltje
- ipv6 address FE80::30 link-local
- ipv6 address FD00:1::30/127
- ipv6 ospf 1 area 1
  clock rate 8000000
 !
 interface Serial0/0/1
@@ -115,16 +105,9 @@ interface Serial0/1/1
  shutdown
  clock rate 2000000
 !
-router ospfv3 1
- router-id 10.1.255.30
- !
- address-family ipv6 unicast
- exit-address-family
-!
 router ospf 1
  area 1 authentication message-digest
- area 1 range 10.1.0.0 255.255.0.0
- network 10.1.0.0 0.0.255.255 area 1
+ network 10.255.0.0 0.0.255.255 area 1
 !
 ip forward-protocol nd
 !

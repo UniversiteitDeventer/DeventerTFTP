@@ -1,6 +1,7 @@
 
 !
-! Last configuration change at 02:09:40 GMT Tue Mar 2 1993 by admin
+! Last configuration change at 12:01:00 GMT Fri Dec 24 2021
+! NVRAM config last updated at 13:41:56 GMT Fri Dec 24 2021
 !
 version 15.2
 no service pad
@@ -97,17 +98,11 @@ vlan 1710
 interface FastEthernet0/1
  switchport access vlan 1710
  switchport mode access
- switchport port-security maximum 2
- switchport port-security violation  restrict
- switchport port-security
  spanning-tree portfast
 !
 interface FastEthernet0/2
  switchport access vlan 1710
  switchport mode access
- switchport port-security maximum 2
- switchport port-security violation  restrict
- switchport port-security
  spanning-tree portfast
 !
 interface FastEthernet0/3
@@ -212,7 +207,7 @@ interface Vlan1
  shutdown
 !
 interface Vlan1710
- ip address 10.1.80.2 255.255.255.0
+ ip address 10.255.2.2 255.255.255.248
 !
 ip http server
 ip http secure-server

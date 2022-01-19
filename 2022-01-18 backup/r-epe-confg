@@ -1,7 +1,7 @@
 
 !
-! Last configuration change at 08:50:46 GMT Wed Jan 19 2022
-! NVRAM config last updated at 08:50:47 GMT Wed Jan 19 2022
+! Last configuration change at 10:08:31 GMT Fri Dec 24 2021 by admin
+! NVRAM config last updated at 10:08:32 GMT Fri Dec 24 2021 by admin
 !
 version 15.4
 service timestamps debug datetime msec localtime show-timezone
@@ -35,8 +35,7 @@ clock timezone GMT 1 0
 no ip domain lookup
 ip domain name epe.net
 ip cef
-ipv6 unicast-routing
-ipv6 cef
+no ipv6 cef
 !
 multilink bundle-name authenticated
 !
@@ -72,13 +71,10 @@ interface Embedded-Service-Engine0/0
 !
 interface GigabitEthernet0/0
  description link to CS1-Deventer
- ip address 10.1.255.22 255.255.255.252
+ ip address 10.255.255.22 255.255.255.252
  ip ospf message-digest-key 1 md5 rood-kabeltje
  duplex auto
  speed auto
- ipv6 address FE80::22 link-local
- ipv6 address FD00:1::22/127
- ipv6 ospf 1 area 1
 !
 interface GigabitEthernet0/1
  no ip address
@@ -88,35 +84,27 @@ interface GigabitEthernet0/1
 interface GigabitEthernet0/1.1703
  description Studenten Epe vlan
  encapsulation dot1Q 1703
- ip address 10.1.42.1 255.255.255.0
+ ip address 10.2.0.1 255.255.255.0
  ip access-group ACL-Inbound in
  ip helper-address 10.0.0.2
- ipv6 address FD00:1:2:1::1/64
- ipv6 ospf 1 area 1
 !
 interface GigabitEthernet0/1.1704
  description Medewerkers Epe vlan
  encapsulation dot1Q 1704
- ip address 10.1.44.1 255.255.255.0
+ ip address 10.2.1.1 255.255.255.0
  ip access-group ACL-Inbound in
  ip helper-address 10.0.0.2
- ipv6 address FD00:1:2:2::1/64
- ipv6 ospf 1 area 1
 !
 interface GigabitEthernet0/1.1707
  description Gast VLAN
  encapsulation dot1Q 1707
- ip address 10.1.46.1 255.255.255.0
+ ip address 10.2.2.1 255.255.255.0
  ip helper-address 10.0.0.2
- ipv6 address FD00:1:2:3::1/64
- ipv6 ospf 1 area 1
 !
 interface GigabitEthernet0/1.1710
  description Beheer vlan
  encapsulation dot1Q 1710 native
- ip address 10.1.40.1 255.255.255.0
- ipv6 address FD00:1:2::1/64
- ipv6 ospf 1 area 1
+ ip address 10.255.1.1 255.255.255.248
 !
 interface Serial0/0/0
  no ip address
@@ -128,21 +116,15 @@ interface Serial0/0/1
  shutdown
  clock rate 2000000
 !
-router ospfv3 1
- router-id 10.1.255.22
- !
- address-family ipv6 unicast
- exit-address-family
-!
 router ospf 1
  area 1 authentication message-digest
- area 1 range 10.1.0.0 255.255.0.0
  passive-interface GigabitEthernet0/1
  passive-interface GigabitEthernet0/1.1703
  passive-interface GigabitEthernet0/1.1704
  passive-interface GigabitEthernet0/1.1707
  passive-interface GigabitEthernet0/1.1710
- network 10.1.0.0 0.0.255.255 area 1
+ network 10.2.0.0 0.0.255.255 area 1
+ network 10.255.0.0 0.0.255.255 area 1
 !
 ip forward-protocol nd
 !

@@ -1,7 +1,7 @@
 
 !
-! Last configuration change at 11:15:00 utc Thu Dec 23 2021 by admin
-! NVRAM config last updated at 11:52:52 utc Thu Dec 23 2021 by admin
+! Last configuration change at 09:08:26 utc Wed Jan 19 2022
+! NVRAM config last updated at 13:33:57 utc Tue Jan 18 2022
 !
 version 15.2
 service config
@@ -42,6 +42,7 @@ no ip domain-lookup
 ip domain-name deventer.net
 !
 !
+ipv6 unicast-routing
 qos queue-softmax-multiplier 100
 vtp domain uni
 vtp mode off
@@ -63,6 +64,9 @@ vlan 1702
  name medewerkers
 !
 vlan 1703-1706 
+!
+vlan 1707
+ name gasten
 !
 vlan 1709
  name servers
@@ -93,8 +97,11 @@ policy-map port_child_policy
 interface Port-channel1
  description Interface voor G1/0/2-3(Etherchannal)
  no switchport
- ip address 10.255.255.17 255.255.255.252
+ ip address 10.1.255.17 255.255.255.252
  ip ospf message-digest-key 1 md5 7 0614002E4803021807121E1F0601
+ ipv6 address FE80::17 link-local
+ ipv6 address FD00:1::17/127
+ ipv6 ospf 1 area 1
 !
 interface GigabitEthernet0/0
  vrf forwarding Mgmt-vrf
@@ -105,8 +112,11 @@ interface GigabitEthernet0/0
 interface GigabitEthernet1/0/1
  description link naar R1-Deventer
  no switchport
- ip address 10.255.255.10 255.255.255.252
+ ip address 10.1.255.10 255.255.255.252
  ip ospf message-digest-key 1 md5 7 0316540402422A4D4C0C15111D17
+ ipv6 address FE80::10 link-local
+ ipv6 address FD00:1::10/127
+ ipv6 ospf 1 area 1
 !
 interface GigabitEthernet1/0/2
  description port-channel naar CS2-Deventer
@@ -128,8 +138,11 @@ interface GigabitEthernet1/0/4
 interface GigabitEthernet1/0/5
  description link to R-Epe
  no switchport
- ip address 10.255.255.21 255.255.255.252
+ ip address 10.1.255.21 255.255.255.252
  ip ospf message-digest-key 1 md5 7 111B160A135F000D062F27302236
+ ipv6 address FE80::21 link-local
+ ipv6 address FD00:1::21/127
+ ipv6 ospf 1 area 1
 !
 interface GigabitEthernet1/0/6
  shutdown
@@ -180,21 +193,19 @@ interface GigabitEthernet1/0/21
  shutdown
 !
 interface GigabitEthernet1/0/22
- description link naar vSphere
- switchport trunk native vlan 1710
- switchport mode trunk
+ no switchport
+ no ip address
+ shutdown
 !
 interface GigabitEthernet1/0/23
- description vSphere WS workaround
- switchport trunk native vlan 1710
- switchport trunk allowed vlan 1703,1704
- switchport mode trunk
+ no switchport
+ no ip address
+ shutdown
 !
 interface GigabitEthernet1/0/24
- description vSphere WS workaround
- switchport trunk native vlan 1710
- switchport trunk allowed vlan 1705,1706
- switchport mode trunk
+ no switchport
+ no ip address
+ shutdown
 !
 interface GigabitEthernet1/1/1
  shutdown
@@ -212,42 +223,53 @@ interface Vlan1
  ip address dhcp
 !
 interface Vlan1701
- ip address 10.1.3.254 255.255.252.0
+ ip address 10.1.11.254 255.255.252.0
  ip access-group ACL-Inbound in
  ip helper-address 10.0.0.2
- standby 2 ip 10.1.0.1
+ standby 2 ip 10.1.8.1
  standby 2 preempt
+ ipv6 address FD00:1:1:1::1/64
+ ipv6 ospf 1 area 1
 !
 interface Vlan1702
- ip address 10.1.7.254 255.255.252.0
+ ip address 10.1.19.254 255.255.252.0
  ip access-group ACL-Inbound in
  ip helper-address 10.0.0.2
- standby 3 ip 10.1.4.1
+ standby 3 ip 10.1.16.1
  standby 3 preempt
+ ipv6 address FD00:1:1:2::1/64
+ ipv6 ospf 1 area 1
 !
-interface Vlan1709
- ip address 10.0.0.254 255.255.255.0
- standby 4 ip 10.0.0.1
+interface Vlan1707
+ ip address 10.1.27.254 255.255.252.0
+ standby 4 ip 10.1.24.1
  standby 4 preempt
+ ipv6 address FD00:1:1:3::1/64
+ ipv6 ospf 1 area 1
 !
 interface Vlan1710
- ip address 10.255.0.254 255.255.255.0
- standby 1 ip 10.255.0.1
+ ip address 10.1.0.254 255.255.255.0
+ standby 1 ip 10.1.0.1
  standby 1 preempt
+ ip ospf 1 area 1
+ ipv6 address FD00:1:1::1/64
+!
+router ospfv3 1
+ router-id 10.1.255.21
+ !
+ address-family ipv6 unicast
+ exit-address-family
 !
 router ospf 1
+ router-id 10.1.255.21
  area 1 authentication message-digest
+ area 1 range 10.1.0.0 255.255.0.0
  passive-interface Vlan1701
  passive-interface Vlan1702
- passive-interface Vlan1709
+ passive-interface Vlan1707
  passive-interface Vlan1710
  passive-interface GigabitEthernet1/0/4
- passive-interface GigabitEthernet1/0/22
- passive-interface GigabitEthernet1/0/23
- passive-interface GigabitEthernet1/0/24
- network 10.0.0.0 0.0.255.255 area 1
  network 10.1.0.0 0.0.255.255 area 1
- network 10.255.0.0 0.0.255.255 area 1
 !
 ip forward-protocol nd
 ip http server

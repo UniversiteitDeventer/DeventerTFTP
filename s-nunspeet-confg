@@ -1,0 +1,138 @@
+
+!
+! Last configuration change at 00:20:37 UTC Mon Mar 1 1993
+!
+version 15.2
+no service pad
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname S-Nunspeet
+!
+boot-start-marker
+boot-end-marker
+!
+enable secret 5 $1$P6Hp$LkNj1aIXpiu6fgHEj2Jao/
+!
+username admin secret 5 $1$a4V4$R7JyYmvhsm6ogWcmh3AAw/
+no aaa new-model
+system mtu routing 1500
+vtp mode transparent
+!
+!
+!
+!
+!
+!
+!
+no ip domain-lookup
+ip domain-name ijsselstreek.net
+!
+!
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+vlan 1403
+ name studenten
+!
+vlan 1404
+ name medewerkers
+!
+vlan 1407
+ name gasten
+!
+vlan 1410
+ name management
+!
+!
+!
+!
+!
+!
+interface FastEthernet0/1
+ switchport access vlan 1403
+ switchport mode access
+!
+interface FastEthernet0/2
+ switchport access vlan 1404
+ switchport mode access
+!
+interface FastEthernet0/3
+!
+interface FastEthernet0/4
+!
+interface FastEthernet0/5
+!
+interface FastEthernet0/6
+!
+interface FastEthernet0/7
+!
+interface FastEthernet0/8
+!
+interface FastEthernet0/9
+!
+interface FastEthernet0/10
+!
+interface FastEthernet0/11
+!
+interface FastEthernet0/12
+!
+interface FastEthernet0/13
+!
+interface FastEthernet0/14
+!
+interface FastEthernet0/15
+!
+interface FastEthernet0/16
+!
+interface FastEthernet0/17
+!
+interface FastEthernet0/18
+!
+interface FastEthernet0/19
+!
+interface FastEthernet0/20
+!
+interface FastEthernet0/21
+!
+interface FastEthernet0/22
+!
+interface FastEthernet0/23
+!
+interface FastEthernet0/24
+!
+interface GigabitEthernet0/1
+ switchport trunk native vlan 1410
+ switchport mode trunk
+!
+interface GigabitEthernet0/2
+ switchport trunk native vlan 1410
+ switchport trunk allowed vlan 1403,1404
+ switchport mode trunk
+!
+interface Vlan1
+ no ip address
+!
+interface Vlan1410
+ ip address 10.2.40.2 255.255.255.0
+!
+ip http server
+ip http secure-server
+!
+no vstack
+!
+line con 0
+ logging synchronous
+ login local
+line vty 0 4
+ password rood-kabeltje
+ login local
+ transport input ssh
+line vty 5 15
+ login
+!
+end

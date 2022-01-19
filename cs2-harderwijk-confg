@@ -1,0 +1,246 @@
+
+!
+! Last configuration change at 09:13:02 UTC Wed Jan 19 2022 by admin
+!
+version 15.2
+no service pad
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+service compress-config
+!
+hostname CS2-Harderwijk
+!
+boot-start-marker
+boot-end-marker
+!
+!
+vrf definition Mgmt-vrf
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+enable secret 5 $1$X4V2$1CiA73fUe8ocE1GSCzeXA/
+!
+username admin secret 5 $1$B9Hc$15k.U4IoLqIYxzOUO0HoZ1
+no aaa new-model
+switch 1 provision ws-c3650-24ts
+!
+!
+!
+!
+!
+ip routing
+!
+no ip domain-lookup
+ip domain-name ijsselstreek.net
+!
+!
+login block-for 200 attempts 3 within 30
+qos queue-softmax-multiplier 100
+vtp mode transparent
+!
+!
+diagnostic bootup level minimal
+spanning-tree mode pvst
+spanning-tree extend system-id
+hw-switch switch 1 logging onboard message level 3
+!
+redundancy
+ mode sso
+!
+!
+vlan 1409-1410 
+!
+!
+class-map match-any non-client-nrt-class
+!
+policy-map port_child_policy
+ class non-client-nrt-class
+  bandwidth remaining ratio 10
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Port-channel1
+ no switchport
+ ip address 10.2.255.18 255.255.255.252
+!
+interface GigabitEthernet0/0
+ vrf forwarding Mgmt-vrf
+ no ip address
+ negotiation auto
+!
+interface GigabitEthernet1/0/1
+ no switchport
+ ip address 10.2.255.14 255.255.255.252
+!
+interface GigabitEthernet1/0/2
+ no switchport
+ no ip address
+ channel-group 1 mode active
+!
+interface GigabitEthernet1/0/3
+ no switchport
+ no ip address
+ channel-group 1 mode active
+!
+interface GigabitEthernet1/0/4
+ switchport trunk native vlan 1410
+ switchport mode trunk
+!
+interface GigabitEthernet1/0/5
+ no switchport
+ ip address 10.2.255.25 255.255.255.252
+!
+interface GigabitEthernet1/0/6
+ no switchport
+ ip address 10.0.255.2 255.255.255.252
+!
+interface GigabitEthernet1/0/7
+!
+interface GigabitEthernet1/0/8
+!
+interface GigabitEthernet1/0/9
+!
+interface GigabitEthernet1/0/10
+!
+interface GigabitEthernet1/0/11
+!
+interface GigabitEthernet1/0/12
+!
+interface GigabitEthernet1/0/13
+!
+interface GigabitEthernet1/0/14
+!
+interface GigabitEthernet1/0/15
+!
+interface GigabitEthernet1/0/16
+!
+interface GigabitEthernet1/0/17
+!
+interface GigabitEthernet1/0/18
+!
+interface GigabitEthernet1/0/19
+!
+interface GigabitEthernet1/0/20
+!
+interface GigabitEthernet1/0/21
+!
+interface GigabitEthernet1/0/22
+ switchport trunk native vlan 1410
+ switchport mode trunk
+!
+interface GigabitEthernet1/0/23
+ switchport trunk native vlan 1410
+ switchport trunk allowed vlan 1405,1406
+!
+interface GigabitEthernet1/0/24
+ switchport trunk native vlan 1410
+ switchport trunk allowed vlan 1403,1404
+!
+interface GigabitEthernet1/1/1
+!
+interface GigabitEthernet1/1/2
+!
+interface GigabitEthernet1/1/3
+!
+interface GigabitEthernet1/1/4
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+interface Vlan1401
+ ip address 10.2.11.253 255.255.252.0
+ ip helper-address 10.0.0.2
+ standby 2 ip 10.2.8.1
+ standby 2 preempt
+!
+interface Vlan1402
+ ip address 10.2.19.253 255.255.252.0
+ ip helper-address 10.0.0.2
+ standby 3 ip 10.2.16.1
+ standby 3 preempt
+!
+interface Vlan1409
+ ip address 10.0.0.254 255.255.255.0
+ ip helper-address 10.0.0.2
+ standby 4 ip 10.0.0.1
+ standby 4 preempt
+!
+interface Vlan1410
+ ip address 10.2.0.253 255.255.255.0
+ ip helper-address 10.0.0.2
+ standby 1 ip 10.2.0.1
+ standby 1 preempt
+!
+router ospf 1
+ area 2 range 10.2.0.0 255.255.0.0
+ passive-interface GigabitEthernet1/0/22
+ passive-interface GigabitEthernet1/0/23
+ passive-interface GigabitEthernet1/0/24
+ network 10.0.0.0 0.0.255.255 area 0
+ network 10.2.0.0 0.0.255.255 area 2
+!
+ip forward-protocol nd
+ip http server
+ip http authentication local
+ip http secure-server
+!
+ip ssh authentication-retries 4
+ip ssh version 2
+!
+!
+!
+!
+!
+!
+line con 0
+ stopbits 1
+line aux 0
+line vty 0 4
+ password rood-kabeltje
+ login local
+ transport input ssh
+line vty 5 15
+ login
+!
+wsma agent exec
+ profile httplistener
+ profile httpslistener
+!
+wsma agent config
+ profile httplistener
+ profile httpslistener
+!
+wsma agent filesys
+ profile httplistener
+ profile httpslistener
+!
+wsma agent notify
+ profile httplistener
+ profile httpslistener
+!
+!
+wsma profile listener httplistener
+ transport http
+!
+wsma profile listener httpslistener
+ transport https
+!
+ap group default-group
+end

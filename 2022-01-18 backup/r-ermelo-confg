@@ -1,7 +1,7 @@
 
 !
-! Last configuration change at 09:34:02 GMT Wed Jan 19 2022
-! NVRAM config last updated at 09:34:04 GMT Wed Jan 19 2022
+! Last configuration change at 09:58:36 GMT Fri Dec 24 2021 by admin
+! NVRAM config last updated at 09:58:37 GMT Fri Dec 24 2021 by admin
 !
 version 15.4
 service timestamps debug datetime msec localtime show-timezone
@@ -35,8 +35,7 @@ clock timezone GMT 1 0
 no ip domain lookup
 ip domain name ermelo.net
 ip cef
-ipv6 unicast-routing
-ipv6 cef
+no ipv6 cef
 !
 multilink bundle-name authenticated
 !
@@ -73,13 +72,10 @@ interface Embedded-Service-Engine0/0
 !
 interface GigabitEthernet0/0
  description link to CS2-Deventer
- ip address 10.1.255.26 255.255.255.252
+ ip address 10.255.255.26 255.255.255.252
  ip ospf message-digest-key 1 md5 7 02140B540F4B04204E4B050D0F12
  duplex auto
  speed auto
- ipv6 address FE80::26 link-local
- ipv6 address FD00:1::26/127
- ipv6 ospf 1 area 1
 !
 interface GigabitEthernet0/1
  no ip address
@@ -90,31 +86,19 @@ interface GigabitEthernet0/1.1703
 !
 interface GigabitEthernet0/1.1705
  encapsulation dot1Q 1705
- ip address 10.1.82.1 255.255.255.0
+ ip address 10.3.0.1 255.255.255.0
  ip access-group ACL-Inbound in
  ip helper-address 10.0.0.2
- ipv6 address FD00:1:3:1::1/64
- ipv6 ospf 1 area 1
 !
 interface GigabitEthernet0/1.1706
  encapsulation dot1Q 1706
- ip address 10.1.84.1 255.255.255.0
+ ip address 10.3.1.1 255.255.255.0
  ip access-group ACL-Inbound in
  ip helper-address 10.0.0.2
- ipv6 address FD00:1:3:2::1/64
- ipv6 ospf 1 area 1
-!
-interface GigabitEthernet0/1.1707
- encapsulation dot1Q 1707
- ip address 10.1.86.1 255.255.255.0
- ipv6 address FD00:1:3:3::1/64
- ipv6 ospf 1 area 1
 !
 interface GigabitEthernet0/1.1710
  encapsulation dot1Q 1710 native
- ip address 10.1.80.1 255.255.255.0
- ipv6 address FD00:1:3::1/64
- ipv6 ospf 1 area 1
+ ip address 10.255.2.1 255.255.255.248
 !
 interface Serial0/0/0
  no ip address
@@ -125,21 +109,14 @@ interface Serial0/0/1
  no ip address
  shutdown
 !
-router ospfv3 1
- router-id 10.1.255.26
- !
- address-family ipv6 unicast
- exit-address-family
-!
 router ospf 1
  area 1 authentication message-digest
- area 1 range 10.1.0.0 255.255.0.0
  passive-interface GigabitEthernet0/1
  passive-interface GigabitEthernet0/1.1705
  passive-interface GigabitEthernet0/1.1706
- passive-interface GigabitEthernet0/1.1707
  passive-interface GigabitEthernet0/1.1710
- network 10.1.0.0 0.0.255.255 area 1
+ network 10.3.0.0 0.0.255.255 area 1
+ network 10.255.0.0 0.0.255.255 area 1
 !
 ip forward-protocol nd
 !

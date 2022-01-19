@@ -1,0 +1,137 @@
+
+!
+! Last configuration change at 09:51:02 UTC Wed Jan 19 2022 by admin
+!
+version 15.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname R-Putten
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$tWRf$3fx397qar7v80KUVhycAa1
+!
+no aaa new-model
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain lookup
+ip domain name ijsselstreek.net
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+cts logging verbose
+!
+!
+license udi pid CISCO1941/K9 sn FCZ2048B07Y
+!
+!
+username admin secret 5 $1$yJYx$9og/z1/wicztWmtMDwp2G/
+!
+redundancy
+!
+!
+!
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Embedded-Service-Engine0/0
+ no ip address
+ shutdown
+!
+interface GigabitEthernet0/0
+ ip address 10.2.255.26 255.255.255.252
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1
+ no ip address
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1.1405
+ encapsulation dot1Q 1405
+ ip address 10.2.82.1 255.255.255.0
+ ip helper-address 10.0.0.2
+!
+interface GigabitEthernet0/1.1406
+ encapsulation dot1Q 1406
+ ip address 10.2.84.1 255.255.255.0
+ ip helper-address 10.0.0.2
+!
+interface GigabitEthernet0/1.1410
+ encapsulation dot1Q 1410 native
+ ip address 10.2.80.1 255.255.255.0
+!
+interface Serial0/0/0
+ no ip address
+ shutdown
+ clock rate 2000000
+!
+interface Serial0/0/1
+ no ip address
+ shutdown
+ clock rate 2000000
+!
+router ospf 1
+ passive-interface GigabitEthernet0/1.1405
+ passive-interface GigabitEthernet0/1.1406
+ passive-interface GigabitEthernet0/1.1410
+ network 10.2.0.0 0.0.255.255 area 2
+!
+ip forward-protocol nd
+!
+no ip http server
+no ip http secure-server
+!
+!
+!
+!
+!
+control-plane
+!
+!
+!
+line con 0
+ logging synchronous
+line aux 0
+line 2
+ no activation-character
+ no exec
+ transport preferred none
+ transport output pad telnet rlogin lapb-ta mop udptn v120 ssh
+ stopbits 1
+line vty 0 4
+ password cisco
+ login local
+ transport input ssh
+!
+scheduler allocate 20000 1000
+!
+end
