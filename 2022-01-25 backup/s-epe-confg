@@ -1,0 +1,268 @@
+
+!
+! Last configuration change at 12:12:53 GMT Wed Jan 19 2022 by admin
+! NVRAM config last updated at 12:12:54 GMT Wed Jan 19 2022 by admin
+!
+version 15.2
+no service pad
+service timestamps debug datetime msec localtime show-timezone
+service timestamps log datetime msec localtime show-timezone
+service password-encryption
+!
+hostname S-Epe
+!
+boot-start-marker
+boot-end-marker
+!
+enable secret 5 $1$D4QQ$pHxfN.DjOHllCbPJ9E6QO.
+!
+username admin secret 5 $1$Levm$flfKYXH4gRhEnu4OWDuZ31
+aaa new-model
+!
+!
+aaa group server radius aaa.local
+ server name aaa.local
+!
+aaa authentication dot1x default group aaa.local
+aaa authorization network default group aaa.local 
+aaa accounting dot1x default start-stop group aaa.local
+!
+!
+!
+!
+!
+!
+aaa session-id common
+clock timezone GMT 1 0
+system mtu routing 1500
+vtp domain uni
+vtp mode off
+!
+!
+!
+!
+!
+ip arp inspection vlan 1703-1704,1707,1710
+!
+!
+ip dhcp snooping vlan 1703-1704,1707,1710
+ip dhcp snooping
+no ip domain-lookup
+ip domain-name epe.net
+!
+!
+crypto pki trustpoint TP-self-signed-1631839360
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-1631839360
+ revocation-check none
+ rsakeypair TP-self-signed-1631839360
+!
+!
+crypto pki certificate chain TP-self-signed-1631839360
+ certificate self-signed 01
+  3082022B 30820194 A0030201 02020101 300D0609 2A864886 F70D0101 05050030 
+  31312F30 2D060355 04031326 494F532D 53656C66 2D536967 6E65642D 43657274 
+  69666963 6174652D 31363331 38333933 3630301E 170D3933 30333031 30303030 
+  35395A17 0D323030 31303130 30303030 305A3031 312F302D 06035504 03132649 
+  4F532D53 656C662D 5369676E 65642D43 65727469 66696361 74652D31 36333138 
+  33393336 3030819F 300D0609 2A864886 F70D0101 01050003 818D0030 81890281 
+  8100AEE3 C4B03132 71EEAAEF D63A18AA 544BD9EB 8A435D11 968A6D35 FE0BC3D8 
+  D1DBA2EA AA89A199 EF589C80 86E63ECB B2C6B015 5A3F5DD5 0136767E 29C4BB6C 
+  0052B2CC D2FC2702 7AD0D1C2 A422160D A73CD14A 229A73F6 75364EDA B270C868 
+  16600C7F 6694C135 18F41F9C 86314B92 8A8483DB 3E93529D A52D5D91 40D91357 
+  B5EB0203 010001A3 53305130 0F060355 1D130101 FF040530 030101FF 301F0603 
+  551D2304 18301680 14AF130D 2BAB3302 15560E8D 6F537E10 6660DB58 F1301D06 
+  03551D0E 04160414 AF130D2B AB330215 560E8D6F 537E1066 60DB58F1 300D0609 
+  2A864886 F70D0101 05050003 8181000F FFCE5DA2 DCDD77C6 78CB55A5 E78F62D1 
+  33DBD0C4 E39B170A 0A0EF19D 137CAB4C 99282618 BA83A94E 2153A94F EFC2EB57 
+  0C813B62 1A0248E9 13281F36 97109C0C 8633D612 7C80E250 35A8EECE 0DB85D91 
+  48B24B79 8B431AF5 C224FB35 E97D0475 089826F1 7DD4C100 485EDAE4 DB11DE3E 
+  6AB414FA FA83DA9D 2D231BFA B045C2
+  	quit
+!
+spanning-tree mode rapid-pvst
+spanning-tree portfast bpduguard default
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+vlan 1703
+ name Epe-Studenten
+!
+vlan 1704
+ name Epe-Medewerkers
+!
+vlan 1707
+ name gasten
+!
+vlan 1710
+ name Management
+!
+!
+!
+!
+!
+!
+interface FastEthernet0/1
+ switchport access vlan 1710
+ switchport mode access
+ switchport nonegotiate
+ switchport port-security maximum 2
+ switchport port-security violation  restrict
+ switchport port-security
+ ip arp inspection trust
+ spanning-tree portfast
+ ip dhcp snooping limit rate 25
+ ip dhcp snooping trust
+!
+interface FastEthernet0/2
+ switchport access vlan 1710
+ switchport mode access
+ switchport nonegotiate
+ switchport port-security maximum 2
+ switchport port-security violation  restrict
+ switchport port-security
+ ip arp inspection trust
+ spanning-tree portfast
+ ip dhcp snooping limit rate 25
+ ip dhcp snooping trust
+!
+interface FastEthernet0/3
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/4
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/5
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/6
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/7
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/8
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/9
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/10
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/11
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/12
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/13
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/14
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/15
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/16
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/17
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/18
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/19
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/20
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/21
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/22
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/23
+ shutdown
+ spanning-tree portfast
+!
+interface FastEthernet0/24
+ shutdown
+ spanning-tree portfast
+!
+interface GigabitEthernet0/1
+ description link to R-Epe
+ switchport trunk native vlan 1710
+ switchport mode trunk
+ switchport nonegotiate
+ ip arp inspection trust
+ ip dhcp snooping limit rate 25
+ ip dhcp snooping trust
+!
+interface GigabitEthernet0/2
+ description vSphere WS workaround to CS1-Deventer
+ switchport trunk native vlan 1710
+ switchport trunk allowed vlan 1703,1704
+ switchport mode trunk
+ ip arp inspection trust
+ ip dhcp snooping limit rate 25
+ ip dhcp snooping trust
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+interface Vlan1710
+ ip address 10.1.40.2 255.255.255.0
+!
+ip http server
+ip http secure-server
+ip ssh authentication-retries 4
+ip ssh version 2
+!
+ip radius source-interface Vlan1710 
+logging trap warnings
+logging host 10.0.0.10
+no radius-server vsa send accounting
+no radius-server vsa send authentication
+!
+radius server aaa.local
+ address ipv4 10.0.0.29 auth-port 1812 acct-port 1813
+ key 7 0316540402422A4D4C0C15111D17
+!
+!
+no vstack
+!
+line con 0
+line vty 0 4
+ password 7 111B160A135F000D062F27302236
+ transport input ssh
+line vty 5 15
+!
+ntp server 10.0.0.28
+end

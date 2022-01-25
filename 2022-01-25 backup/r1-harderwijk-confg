@@ -1,0 +1,150 @@
+
+!
+! Last configuration change at 17:42:01 GMT Mon Jan 24 2022 by admin
+! NVRAM config last updated at 17:42:50 GMT Tue Jan 25 2022 by admin
+!
+version 15.4
+service timestamps debug datetime msec localtime show-timezone
+service timestamps log datetime msec localtime show-timezone
+no service password-encryption
+!
+hostname R1-Harderwijk
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$t6HG$rv68YjPvQT2inY6MNVMIJ/
+!
+no aaa new-model
+clock timezone GMT 1 0
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain lookup
+ip domain name ijsselstreek.net
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+multilink bundle-name authenticated
+!
+cts logging verbose
+!
+!
+license udi pid CISCO1941/K9 sn FCZ2048406J
+!
+!
+username admin secret 5 $1$.V1W$991foc65v0WaJypM12TxO.
+!
+redundancy
+!
+!
+!
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Embedded-Service-Engine0/0
+ no ip address
+ shutdown
+!
+interface GigabitEthernet0/0
+ ip address 10.2.255.2 255.255.255.248
+ duplex auto
+ speed auto
+ ipv6 address FE80::2 link-local
+ ipv6 address FD00:2::2/126
+ ipv6 ospf 1 area 2
+!
+interface GigabitEthernet0/1
+ ip address 10.2.255.9 255.255.255.252
+ duplex auto
+ speed auto
+ ipv6 address FE80::9 link-local
+ ipv6 address FD00:2::9/127
+ ipv6 ospf 1 area 2
+!
+interface Serial0/0/0
+ ip address 10.2.255.29 255.255.255.252
+ ipv6 address FE80::29 link-local
+ ipv6 address FD00:2::29/127
+ ipv6 ospf 1 area 2
+!
+interface Serial0/0/1
+ no ip address
+ shutdown
+ clock rate 2000000
+!
+interface Serial0/1/0
+ no ip address
+ shutdown
+ clock rate 2000000
+!
+interface Serial0/1/1
+ no ip address
+ shutdown
+ clock rate 2000000
+!
+router ospfv3 1
+ router-id 10.2.255.29
+ !
+ address-family ipv6 unicast
+ exit-address-family
+!
+router ospf 1
+ network 10.2.0.0 0.0.255.255 area 2
+!
+ip forward-protocol nd
+!
+no ip http server
+no ip http secure-server
+!
+!
+logging trap warnings
+logging host 10.0.0.10
+!
+!
+!
+control-plane
+!
+!
+!
+line con 0
+ logging synchronous
+ login local
+line aux 0
+line 2
+ no activation-character
+ no exec
+ transport preferred none
+ transport output pad telnet rlogin lapb-ta mop udptn v120 ssh
+ stopbits 1
+line vty 0 4
+ password rood-kabeltje
+ login local
+ transport input ssh
+!
+scheduler allocate 20000 1000
+ntp server 10.0.0.28
+!
+end

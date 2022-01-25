@@ -1,0 +1,177 @@
+
+!
+! Last configuration change at 00:57:46 GMT Tue Jan 25 2022 by admin
+! NVRAM config last updated at 17:43:09 GMT Tue Jan 25 2022 by admin
+!
+version 15.4
+service timestamps debug datetime msec localtime show-timezone
+service timestamps log datetime msec localtime show-timezone
+no service password-encryption
+!
+hostname R-Nunspeet
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$h9To$QtFCZHqXLU7P7BrXCRQbg1
+!
+no aaa new-model
+clock timezone GMT 1 0
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain lookup
+ip domain name ijsselstreek.net
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+multilink bundle-name authenticated
+!
+cts logging verbose
+!
+!
+license udi pid CISCO1941/K9 sn FCZ2048406H
+!
+!
+username admin secret 5 $1$v2hT$VnneYt.ZWB8wQBz44yKVv/
+!
+redundancy
+!
+!
+!
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Embedded-Service-Engine0/0
+ no ip address
+ shutdown
+!
+interface GigabitEthernet0/0
+ ip address 10.2.255.22 255.255.255.252
+ duplex auto
+ speed auto
+ ipv6 address FE80::22 link-local
+ ipv6 address FD00:2::22/127
+ ipv6 ospf 1 area 2
+!
+interface GigabitEthernet0/1
+ no ip address
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1.1403
+ encapsulation dot1Q 1403
+ ip address 10.2.42.1 255.255.255.0
+ ip access-group ACL-Inbound in
+ ip helper-address 10.0.0.2
+ ipv6 address FD00:2:2:1::1/64
+ ipv6 ospf 1 area 2
+!
+interface GigabitEthernet0/1.1404
+ encapsulation dot1Q 1404
+ ip address 10.2.44.1 255.255.255.0
+ ip access-group ACL-Inbound in
+ ip helper-address 10.0.0.2
+ ipv6 address FD00:2:2:2::1/64
+ ipv6 ospf 1 area 2
+!
+interface GigabitEthernet0/1.1407
+ encapsulation dot1Q 1407
+ ip address 10.2.46.1 255.255.255.0
+ ip access-group ACL-Inbound in
+ ip helper-address 10.0.0.2
+ ipv6 address FD00:2:2:3::1/64
+ ipv6 ospf 1 area 2
+!
+interface GigabitEthernet0/1.1410
+ encapsulation dot1Q 1410 native
+ ip address 10.2.40.1 255.255.255.0
+ ip helper-address 10.0.0.2
+ ipv6 address FD00:2:2::1/64
+ ipv6 ospf 1 area 2
+!
+interface Serial0/0/0
+ no ip address
+ shutdown
+ clock rate 2000000
+!
+interface Serial0/0/1
+ no ip address
+ shutdown
+ clock rate 2000000
+!
+router ospfv3 1
+ router-id 10.2.255.22
+ !
+ address-family ipv6 unicast
+ exit-address-family
+!
+router ospf 1
+ passive-interface GigabitEthernet0/1.1403
+ passive-interface GigabitEthernet0/1.1404
+ passive-interface GigabitEthernet0/1.1407
+ passive-interface GigabitEthernet0/1.1410
+ network 10.2.0.0 0.0.255.255 area 2
+!
+ip forward-protocol nd
+!
+no ip http server
+no ip http secure-server
+!
+!
+ip access-list extended ACL-Inbound
+ deny   tcp 10.2.42.0 0.0.0.255 any eq 22
+ deny   tcp 10.2.44.0 0.0.0.255 any eq 22
+ deny   tcp 10.2.46.0 0.0.0.255 any eq 22
+ permit ip any any
+!
+logging trap warnings
+logging host 10.0.0.27
+!
+!
+!
+control-plane
+!
+!
+!
+line con 0
+ logging synchronous
+ login local
+line aux 0
+line 2
+ no activation-character
+ no exec
+ transport preferred none
+ transport output pad telnet rlogin lapb-ta mop udptn v120 ssh
+ stopbits 1
+line vty 0 4
+ password cisco
+ login local
+ transport input ssh
+!
+scheduler allocate 20000 1000
+ntp server 10.0.0.28
+!
+end

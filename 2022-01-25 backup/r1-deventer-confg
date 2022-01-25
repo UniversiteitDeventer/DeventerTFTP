@@ -1,0 +1,148 @@
+
+!
+! Last configuration change at 12:48:49 GMT Tue Jan 25 2022 by admin
+! NVRAM config last updated at 17:40:04 GMT Tue Jan 25 2022 by admin
+!
+version 15.4
+service timestamps debug datetime msec localtime show-timezone
+service timestamps log datetime msec localtime show-timezone
+no service password-encryption
+!
+hostname R1-Deventer
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$Ndc4$KXisR.uq9vp4QKBSyhnuh1
+!
+no aaa new-model
+clock timezone GMT 1 0
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain lookup
+ip domain name deventer.net
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+multilink bundle-name authenticated
+!
+cts logging verbose
+!
+!
+license udi pid CISCO1941/K9 sn FCZ2048406L
+license boot module c1900 technology-package securityk9
+!
+!
+username admin secret 5 $1$6vu0$rHFI4eXyNnvI2a9aGJOlF1
+!
+redundancy
+!
+!
+!
+!
+!
+ip ssh authentication-retries 4
+ip ssh version 2
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Embedded-Service-Engine0/0
+ no ip address
+ shutdown
+!
+interface GigabitEthernet0/0
+ ip address 10.1.255.2 255.255.255.248
+ ip ospf message-digest-key 1 md5 rood-kabeltje
+ duplex auto
+ speed auto
+ ipv6 address FE80::2 link-local
+ ipv6 address FD00:1::2/126
+ ipv6 ospf 1 area 1
+!
+interface GigabitEthernet0/1
+ description lint to CS1-Deventer
+ ip address 10.1.255.9 255.255.255.252
+ ip ospf message-digest-key 1 md5 rood-kabeltje
+ duplex auto
+ speed auto
+ ipv6 address FE80::9 link-local
+ ipv6 address FD00:1::9/127
+ ipv6 ospf 1 area 1
+!
+interface Serial0/0/0
+ description backup link to R2-Deventer
+ ip address 10.1.255.29 255.255.255.252
+ ip ospf message-digest-key 1 md5 rood-kabeltje
+ ipv6 address FE80::29 link-local
+ ipv6 address FD00:1::29/127
+ ipv6 ospf 1 area 1
+!
+interface Serial0/0/1
+ no ip address
+ shutdown
+ clock rate 2000000
+!
+router ospfv3 1
+ router-id 10.1.255.29
+ !
+ address-family ipv6 unicast
+ exit-address-family
+!
+router ospf 1
+ area 1 authentication message-digest
+ area 1 range 10.1.0.0 255.255.0.0
+ network 10.1.0.0 0.0.255.255 area 1
+!
+ip forward-protocol nd
+!
+no ip http server
+no ip http secure-server
+!
+!
+logging trap notifications
+logging host 10.0.0.10
+!
+!
+!
+control-plane
+!
+!
+!
+line con 0
+line aux 0
+line 2
+ no activation-character
+ no exec
+ transport preferred none
+ transport output pad telnet rlogin lapb-ta mop udptn v120 ssh
+ stopbits 1
+line vty 0 4
+ password rood-kabeltje
+ login local
+ transport input ssh
+!
+scheduler allocate 20000 1000
+ntp server 10.0.0.28
+!
+end

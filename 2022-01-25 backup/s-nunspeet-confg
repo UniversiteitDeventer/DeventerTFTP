@@ -1,0 +1,204 @@
+
+!
+! Last configuration change at 16:54:08 GMT Tue Jan 25 2022 by admin
+! NVRAM config last updated at 17:44:33 GMT Tue Jan 25 2022 by admin
+!
+version 15.2
+no service pad
+service timestamps debug datetime msec localtime show-timezone
+service timestamps log datetime msec localtime show-timezone
+no service password-encryption
+!
+hostname S-Nunspeet
+!
+boot-start-marker
+boot-end-marker
+!
+enable secret 5 $1$P6Hp$LkNj1aIXpiu6fgHEj2Jao/
+!
+username admin secret 5 $1$a4V4$R7JyYmvhsm6ogWcmh3AAw/
+aaa new-model
+!
+!
+aaa group server radius IAS
+ server 10.0.0.40 auth-port 1812 acct-port 1813
+!
+aaa authentication login UserAuthentication local group IAS
+aaa authorization exec UserAuthorization local group IAS if-authenticated 
+aaa authorization network UserAuthorization local group IAS 
+aaa accounting exec default start-stop group IAS
+aaa accounting system default start-stop group IAS
+!
+!
+!
+!
+!
+!
+aaa session-id common
+clock timezone GMT 1 0
+system mtu routing 1500
+vtp mode transparent
+!
+!
+!
+!
+!
+!
+!
+ip dhcp snooping
+no ip domain-lookup
+ip domain-name ijsselstreek.net
+!
+!
+!
+spanning-tree mode pvst
+spanning-tree portfast default
+spanning-tree portfast bpduguard default
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+vlan 1403
+ name studenten
+!
+vlan 1404
+ name medewerkers
+!
+vlan 1407
+ name gasten
+!
+vlan 1410
+ name management
+!
+!
+!
+!
+!
+!
+interface FastEthernet0/1
+ switchport access vlan 1403
+ switchport mode access
+ switchport port-security maximum 2
+ switchport port-security violation  restrict
+!
+interface FastEthernet0/2
+ switchport access vlan 1404
+ switchport mode access
+ switchport port-security maximum 2
+ switchport port-security violation  restrict
+!
+interface FastEthernet0/3
+ shutdown
+!
+interface FastEthernet0/4
+ shutdown
+!
+interface FastEthernet0/5
+ shutdown
+!
+interface FastEthernet0/6
+ shutdown
+!
+interface FastEthernet0/7
+ shutdown
+!
+interface FastEthernet0/8
+ shutdown
+!
+interface FastEthernet0/9
+ shutdown
+!
+interface FastEthernet0/10
+ shutdown
+!
+interface FastEthernet0/11
+ shutdown
+!
+interface FastEthernet0/12
+ shutdown
+!
+interface FastEthernet0/13
+ shutdown
+!
+interface FastEthernet0/14
+ shutdown
+!
+interface FastEthernet0/15
+ shutdown
+!
+interface FastEthernet0/16
+ shutdown
+!
+interface FastEthernet0/17
+ shutdown
+!
+interface FastEthernet0/18
+ shutdown
+!
+interface FastEthernet0/19
+ shutdown
+!
+interface FastEthernet0/20
+ shutdown
+!
+interface FastEthernet0/21
+ shutdown
+!
+interface FastEthernet0/22
+ shutdown
+!
+interface FastEthernet0/23
+ shutdown
+!
+interface FastEthernet0/24
+ shutdown
+!
+interface GigabitEthernet0/1
+ switchport trunk native vlan 1410
+ switchport mode trunk
+!
+interface GigabitEthernet0/2
+ switchport trunk native vlan 1410
+ switchport trunk allowed vlan 1403,1404
+ switchport mode trunk
+!
+interface Vlan1
+ no ip address
+!
+interface Vlan1410
+ ip address 10.2.40.2 255.255.255.0
+!
+interface Vlan1710
+ no ip address
+!
+ip http server
+ip http secure-server
+ip ssh version 2
+!
+ip radius source-interface Vlan1410 
+logging trap warnings
+logging host 10.0.0.10
+radius-server host 10.0.0.40 key rood-kabeltje
+radius-server host 10.0.0.40 auth-port 1812 acct-port 1813 key rood-kabeltje
+no radius-server vsa send accounting
+no radius-server vsa send authentication
+!
+!
+no vstack
+privilege exec level 1 show configuration
+privilege exec level 1 show
+!
+line con 0
+ logging synchronous
+line vty 0 4
+ password rood-kabeltje
+ authorization exec UserAuthorization
+ login authentication UserAuthentication
+ transport input ssh
+line vty 5 15
+ authorization exec UserAuthorization
+ login authentication UserAuthentication
+ transport input ssh
+!
+ntp server 10.0.0.28
+end
