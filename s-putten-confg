@@ -1,6 +1,7 @@
 
 !
-! Last configuration change at 16:24:52 GMT Wed Jan 26 2022 by admin
+! Last configuration change at 16:17:58 GMT Wed Jan 26 2022 by admin
+! NVRAM config last updated at 13:06:59 GMT Wed Jan 26 2022 by admin
 !
 version 15.2
 no service pad
@@ -8,27 +9,27 @@ service timestamps debug datetime msec localtime show-timezone
 service timestamps log datetime msec localtime show-timezone
 no service password-encryption
 !
-hostname S-Nunspeet
+hostname S-Putten
 !
 boot-start-marker
 boot-end-marker
 !
-enable secret 5 $1$P6Hp$LkNj1aIXpiu6fgHEj2Jao/
+enable secret 5 $1$WJov$7uuH4sJl67GxFX7UhvZE1/
 !
-username admin secret 5 $1$a4V4$R7JyYmvhsm6ogWcmh3AAw/
+username admin secret 5 $1$t9qm$QjBLmysIrXFNv58dBjipf0
 aaa new-model
 !
 !
-aaa group server radius radius1
+aaa group server radius IAS
  server 10.0.0.40 auth-port 1812 acct-port 1813
 !
-aaa authentication login UserAuthentication local group radius1
+aaa authentication login UserAuthentication local group IAS
 aaa authentication dot1x default group radius1
-aaa authorization exec UserAuthorization local group radius1 if-authenticated 
+aaa authorization exec UserAuthorization local group IAS if-authenticated 
 aaa authorization network default group radius1 
-aaa authorization network UserAuthorization local group radius1 
-aaa accounting exec default start-stop group radius1
-aaa accounting system default start-stop group radius1
+aaa authorization network UserAuthorization local group IAS 
+aaa accounting exec default start-stop group IAS
+aaa accounting system default start-stop group IAS
 !
 !
 !
@@ -46,39 +47,11 @@ vtp mode transparent
 !
 !
 !
-ip dhcp snooping
 no ip domain-lookup
 ip domain-name ijsselstreek.net
 !
 !
-crypto pki trustpoint TP-self-signed-1631839488
- enrollment selfsigned
- subject-name cn=IOS-Self-Signed-Certificate-1631839488
- revocation-check none
- rsakeypair TP-self-signed-1631839488
 !
-!
-crypto pki certificate chain TP-self-signed-1631839488
- certificate self-signed 01
-  3082022B 30820194 A0030201 02020101 300D0609 2A864886 F70D0101 05050030 
-  31312F30 2D060355 04031326 494F532D 53656C66 2D536967 6E65642D 43657274 
-  69666963 6174652D 31363331 38333934 3838301E 170D3933 30333031 30303030 
-  35385A17 0D323030 31303130 30303030 305A3031 312F302D 06035504 03132649 
-  4F532D53 656C662D 5369676E 65642D43 65727469 66696361 74652D31 36333138 
-  33393438 3830819F 300D0609 2A864886 F70D0101 01050003 818D0030 81890281 
-  8100B655 D0A01C31 3DAE7C87 1074B0C0 B9A5B95A 3C36E6AE B3477DF1 73EFB320 
-  A980A7CE 06A95288 73288392 B610E9CF AF77E1DF 5113773C 496E360B 6B11E3D3 
-  83302F14 58F13C6E 040EE053 AD6C01E6 7E02C676 6AD7029A FBC43C4A 2A835FC4 
-  DC0EE6A6 B155EEB1 A4892A67 C99D878C 0ABE2349 70CFA985 1866F0E7 30EF2769 
-  78BB0203 010001A3 53305130 0F060355 1D130101 FF040530 030101FF 301F0603 
-  551D2304 18301680 14BC752F FAECE534 D93F2986 2FE9A969 AFE48AA3 4C301D06 
-  03551D0E 04160414 BC752FFA ECE534D9 3F29862F E9A969AF E48AA34C 300D0609 
-  2A864886 F70D0101 05050003 81810020 61EC2D8C 1A2F152D A367F8E0 2B112682 
-  B9B3E1BB 61A8DF6D D1AB1C2E 93B2901F 7850A3EE 08A8B9DC DD069929 EA5D4AFA 
-  4A2C1A83 B3BC7356 02CA0406 4A3F6834 4E0F0DFB DDE6442C F3A2D71A CFB45E9E 
-  B3B2FBF5 8AC61CD5 6EE70954 979CA760 B08477E0 AF9F2F65 4233ED6A 754046E8 
-  7B8332A7 CF793FFA D00F80FB 7E35CC
-  	quit
 dot1x system-auth-control
 spanning-tree mode pvst
 spanning-tree portfast default
@@ -87,10 +60,10 @@ spanning-tree extend system-id
 !
 vlan internal allocation policy ascending
 !
-vlan 1403
+vlan 1405
  name studenten
 !
-vlan 1404
+vlan 1406
  name medewerkers
 !
 vlan 1407
@@ -99,22 +72,27 @@ vlan 1407
 vlan 1410
  name management
 !
+vlan 1420
+ name Straalverbinding
+!
 !
 !
 !
 !
 !
 interface FastEthernet0/1
- switchport access vlan 1403
+ switchport access vlan 1405
  switchport mode access
  switchport port-security maximum 2
  switchport port-security violation  restrict
+ switchport port-security
 !
 interface FastEthernet0/2
- switchport access vlan 1404
+ switchport access vlan 1406
  switchport mode access
  switchport port-security maximum 2
  switchport port-security violation  restrict
+ switchport port-security
 !
 interface FastEthernet0/3
  shutdown
@@ -185,27 +163,30 @@ interface FastEthernet0/22
  shutdown
 !
 interface FastEthernet0/23
- shutdown
+ description vSphere WS Workaround naar CS2-Harderwijk
+ switchport trunk native vlan 1410
+ switchport trunk allowed vlan 1405,1406
+ switchport mode trunk
 !
 interface FastEthernet0/24
+ shutdown
 !
 interface GigabitEthernet0/1
+ description link naar R-Putten
  switchport trunk native vlan 1410
  switchport mode trunk
 !
 interface GigabitEthernet0/2
- switchport trunk native vlan 1410
- switchport trunk allowed vlan 1403,1404
+ description straalverbinding naar S-Ermelo
+ switchport trunk native vlan 1420
  switchport mode trunk
 !
 interface Vlan1
  no ip address
+ shutdown
 !
 interface Vlan1410
- ip address 10.2.40.2 255.255.255.0
-!
-interface Vlan1710
- no ip address
+ ip address 10.2.80.2 255.255.255.0
 !
 ip http server
 ip http secure-server
@@ -216,13 +197,9 @@ logging trap warnings
 logging host 10.0.0.10
 radius-server host 10.0.0.40 key rood-kabeltje
 radius-server host 10.0.0.40 auth-port 1812 acct-port 1813 key rood-kabeltje
-no radius-server vsa send accounting
-no radius-server vsa send authentication
 !
 !
 no vstack
-privilege exec level 1 show configuration
-privilege exec level 1 show
 !
 line con 0
  logging synchronous
@@ -230,11 +207,11 @@ line vty 0 4
  password rood-kabeltje
  authorization exec UserAuthorization
  login authentication UserAuthentication
- transport input ssh
+ transport input telnet ssh
 line vty 5 15
  authorization exec UserAuthorization
  login authentication UserAuthentication
- transport input ssh
+ transport input telnet ssh
 !
 ntp server 10.0.0.28
 end
