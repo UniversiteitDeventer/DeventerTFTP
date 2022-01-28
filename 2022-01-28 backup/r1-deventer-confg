@@ -1,20 +1,20 @@
 
 !
-! No configuration change since last restart
-! NVRAM config last updated at 15:10:49 GMT Fri Jan 28 2022 by admin
+! Last configuration change at 12:48:49 GMT Tue Jan 25 2022 by admin
+! NVRAM config last updated at 16:52:28 GMT Wed Jan 26 2022 by admin
 !
 version 15.4
 service timestamps debug datetime msec localtime show-timezone
 service timestamps log datetime msec localtime show-timezone
 no service password-encryption
 !
-hostname R1-Harderwijk
+hostname R1-Deventer
 !
 boot-start-marker
 boot-end-marker
 !
 !
-enable secret 5 $1$t6HG$rv68YjPvQT2inY6MNVMIJ/
+enable secret 5 $1$Ndc4$KXisR.uq9vp4QKBSyhnuh1
 !
 no aaa new-model
 clock timezone GMT 1 0
@@ -33,7 +33,7 @@ clock timezone GMT 1 0
 !
 !
 no ip domain lookup
-ip domain name ijsselstreek.net
+ip domain name deventer.net
 ip cef
 ipv6 unicast-routing
 ipv6 cef
@@ -43,10 +43,11 @@ multilink bundle-name authenticated
 cts logging verbose
 !
 !
-license udi pid CISCO1941/K9 sn FCZ2048406J
+license udi pid CISCO1941/K9 sn FCZ2048406L
+license boot module c1900 technology-package securityk9
 !
 !
-username admin secret 5 $1$.V1W$991foc65v0WaJypM12TxO.
+username admin secret 5 $1$6vu0$rHFI4eXyNnvI2a9aGJOlF1
 !
 redundancy
 !
@@ -54,6 +55,8 @@ redundancy
 !
 !
 !
+ip ssh authentication-retries 4
+ip ssh version 2
 ! 
 !
 !
@@ -69,54 +72,47 @@ interface Embedded-Service-Engine0/0
  shutdown
 !
 interface GigabitEthernet0/0
- ip address 10.2.255.2 255.255.255.248
+ ip address 10.1.255.2 255.255.255.248
  ip ospf message-digest-key 1 md5 rood-kabeltje
  duplex auto
  speed auto
  ipv6 address FE80::2 link-local
- ipv6 address FD00:2::2/126
- ipv6 ospf 1 area 2
+ ipv6 address FD00:1::2/126
+ ipv6 ospf 1 area 1
 !
 interface GigabitEthernet0/1
- ip address 10.2.255.9 255.255.255.252
+ description lint to CS1-Deventer
+ ip address 10.1.255.9 255.255.255.252
  ip ospf message-digest-key 1 md5 rood-kabeltje
  duplex auto
  speed auto
  ipv6 address FE80::9 link-local
- ipv6 address FD00:2::9/127
- ipv6 ospf 1 area 2
+ ipv6 address FD00:1::9/127
+ ipv6 ospf 1 area 1
 !
 interface Serial0/0/0
- ip address 10.2.255.29 255.255.255.252
+ description backup link to R2-Deventer
+ ip address 10.1.255.29 255.255.255.252
  ip ospf message-digest-key 1 md5 rood-kabeltje
  ipv6 address FE80::29 link-local
- ipv6 address FD00:2::29/127
- ipv6 ospf 1 area 2
+ ipv6 address FD00:1::29/127
+ ipv6 ospf 1 area 1
 !
 interface Serial0/0/1
  no ip address
  shutdown
  clock rate 2000000
 !
-interface Serial0/1/0
- no ip address
- shutdown
- clock rate 2000000
-!
-interface Serial0/1/1
- no ip address
- shutdown
- clock rate 2000000
-!
 router ospfv3 1
- router-id 10.2.255.29
+ router-id 10.1.255.29
  !
  address-family ipv6 unicast
  exit-address-family
 !
 router ospf 1
- area 2 authentication message-digest
- network 10.2.0.0 0.0.255.255 area 2
+ area 1 authentication message-digest
+ area 1 range 10.1.0.0 255.255.0.0
+ network 10.1.0.0 0.0.255.255 area 1
 !
 ip forward-protocol nd
 !
@@ -124,7 +120,7 @@ no ip http server
 no ip http secure-server
 !
 !
-logging trap warnings
+logging trap notifications
 logging host 10.0.0.10
 !
 !
@@ -134,8 +130,6 @@ control-plane
 !
 !
 line con 0
- logging synchronous
- login local
 line aux 0
 line 2
  no activation-character
