@@ -1,7 +1,7 @@
 
 !
-! Last configuration change at 11:25:20 GMT Mon Jan 31 2022 by admin
-! NVRAM config last updated at 12:11:51 GMT Mon Jan 31 2022 by admin
+! Last configuration change at 17:11:15 GMT Mon Jan 31 2022 by admin
+! NVRAM config last updated at 17:11:26 GMT Mon Jan 31 2022 by admin
 !
 version 15.2
 no service pad
@@ -186,6 +186,7 @@ interface GigabitEthernet1/0/12
 !
 interface GigabitEthernet1/0/13
  description link naar WLC-Harderwijk
+ switchport access vlan 1410
  switchport trunk native vlan 1410
  switchport mode trunk
  ip arp inspection trust
@@ -224,6 +225,7 @@ interface GigabitEthernet1/0/22
 !
 interface GigabitEthernet1/0/23
  description vSphere WS workaround naar PUTTEN
+ switchport access vlan 1410
  switchport trunk native vlan 1410
  switchport trunk allowed vlan 1405,1406
  ip arp inspection trust
@@ -337,6 +339,9 @@ interface Vlan1417
  standby 33 ipv6 autoconfig
  ipv6 address FD00:2:1:7::2/64
  ipv6 ospf network point-to-point
+!
+interface Vlan1420
+ no ip address
 !
 router ospfv3 1
  !
